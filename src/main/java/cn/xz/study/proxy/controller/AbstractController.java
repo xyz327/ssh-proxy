@@ -12,7 +12,7 @@ import lombok.Setter;
  * @date 2019/11/3 12:34
  */
 public abstract class AbstractController {
-    protected FxSshService sshService = new FxSshService();
+    protected FxSshService sshService = FxSshService.INSTANCE;
     @Setter
     @Getter
     protected Application application;
@@ -20,9 +20,16 @@ public abstract class AbstractController {
     @FXML
     protected void initialize() {
         initializeInternal();
+        initializeData();
     }
 
     protected abstract void initializeInternal();
+
+    protected abstract void initializeDataInternal();
+
+    public void initializeData() {
+        initializeDataInternal();
+    }
 
 
     //

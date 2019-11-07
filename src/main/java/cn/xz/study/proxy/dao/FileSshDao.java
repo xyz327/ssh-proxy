@@ -59,7 +59,7 @@ public class FileSshDao implements SshDao {
                     }
                 });
             }
-            forwardFileDir.delete();
+            FileUtils.deleteQuietly(forwardFileDir);
         }
         if (proxyFileDir.exists()) {
             File[] files = proxyFileDir.listFiles();
@@ -74,7 +74,7 @@ public class FileSshDao implements SshDao {
                     }
                 });
             }
-            proxyFileDir.delete();
+            FileUtils.deleteQuietly(proxyFileDir);
         }
         try {
             doSaveFile();
@@ -101,7 +101,8 @@ public class FileSshDao implements SshDao {
     }
     
     private String getFileName(String id) {
-        return id.replaceAll("[@:\\.#\\$\\*]", "-") + ".json";
+        return id;
+        //return id.replaceAll("[@:\\.#\\$\\*]", "-") + ".json";
     }
     
     @Override

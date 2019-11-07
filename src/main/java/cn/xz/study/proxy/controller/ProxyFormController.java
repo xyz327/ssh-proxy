@@ -25,6 +25,11 @@ public class ProxyFormController extends AbstractController {
 
     }
 
+    @Override
+    protected void initializeDataInternal() {
+
+    }
+
     public Boolean save() {
         ProxyInfo proxyInfo = new ProxyInfo();
         proxyInfo.setDesc(proxyDesc.getText())

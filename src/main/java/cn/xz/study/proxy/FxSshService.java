@@ -12,7 +12,8 @@ import lombok.experimental.Delegate;
  * @author xizhou
  * @date 2019/11/3 18:20
  */
-public class FxSshService {
+public enum  FxSshService {
+    INSTANCE;
     @Delegate
     private SshService sshService = new DefaultSshService();
     private ObservableList<ForwardInfo> observableList = FXCollections.observableArrayList();

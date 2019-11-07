@@ -1,9 +1,8 @@
-package cn.xz.study;
+package cn.xz.study.proxy;
 
 import javafx.fxml.FXMLLoader;
 import lombok.experimental.UtilityClass;
 
-import java.net.URL;
 import java.util.Objects;
 
 /**

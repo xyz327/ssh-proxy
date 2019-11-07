@@ -1,6 +1,6 @@
-package cn.xz.study;
+package cn.xz.study.proxy;
 
-import cn.xz.study.proxy.controller.Jaria2Controller;
+import cn.xz.study.proxy.controller.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,15 +19,13 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(Objects.requireNonNull(getClass().getClassLoader().getResource("sample.fxml")));
+        fxmlLoader.setLocation(Objects.requireNonNull(getClass().getClassLoader().getResource("main.fxml")));
         Parent parent = fxmlLoader.load();
-        Jaria2Controller controller  = fxmlLoader.getController();
+        MainController controller  = fxmlLoader.getController();
         controller.setApplication(this);
 
-        Scene scene = new Scene(parent, 640, 480);
+        Scene scene = new Scene(parent);
         stage.setScene(scene);
         stage.show();
     }

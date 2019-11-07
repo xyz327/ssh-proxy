@@ -1,9 +1,9 @@
 /**
  * @author xizhou
  * @date 2019/11/3 10:35
- *//*
+ */
 
-module cn.xz.jaria {
+module cn.xz.study.proxy {
     requires static lombok;
     requires javafx.controls;
     requires javafx.fxml;
@@ -12,7 +12,7 @@ module cn.xz.jaria {
     requires com.pagoda.platform.ssh;
     requires java.base;
     // 暴露包 sample 给 javafx 的模块们，使其可以在运行时使用反射访问
-    opens cn.xz.study to javafx.graphics, javafx.fxml;
-    opens cn.xz.study.jaria2.controller to javafx.graphics, javafx.fxml;
-    opens com.pagoda.platform.ssh.proxy.entity to com.fasterxml.jackson.databind;
-}*/
+    opens cn.xz.study.proxy to javafx.graphics, javafx.fxml;
+    opens cn.xz.study.proxy.controller to javafx.graphics, javafx.fxml;
+    opens cn.xz.study.proxy.entity to com.fasterxml.jackson.databind;
+}

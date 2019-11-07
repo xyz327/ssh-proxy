@@ -1,6 +1,6 @@
 package cn.xz.study.proxy.controller;
 
-import cn.xz.study.FXMLLoaderUtil;
+import cn.xz.study.proxy.FXMLLoaderUtil;
 import cn.xz.study.proxy.entity.ForwardInfo;
 import cn.xz.study.proxy.entity.ProxyInfo;
 import javafx.collections.FXCollections;
@@ -34,8 +34,9 @@ public class ForwardFormController extends AbstractController {
     @FXML
     private ChoiceBox<String> forwardProxyInfo;
 
+    @Override
     protected void initializeInternal() {
-        initProxyList();
+
     }
 
     private void initProxyList() {
@@ -47,8 +48,12 @@ public class ForwardFormController extends AbstractController {
         }
     }
 
+    @Override
+    protected void initializeDataInternal() {
+        initProxyList();
+    }
 
-    //==================
+//==================
 
 
     public boolean onNewProxy(ActionEvent event) throws IOException {
@@ -61,7 +66,7 @@ public class ForwardFormController extends AbstractController {
             System.out.println("确认");
             ProxyFormController proxyFormController = fxmlLoader.getController();
             if (proxyFormController.save()) {
-                initProxyList();
+                initializeData();
                 return true;
             }
             return false;
@@ -73,10 +78,10 @@ public class ForwardFormController extends AbstractController {
     public void save() {
         ForwardInfo forwardInfo = new ForwardInfo();
         forwardInfo.setDesc(forwardDesc.getText())
-        .setLocalPort(Integer.valueOf(forwardLocalPort.getText()))
-        .setRemoteHost(forwardRemoteHost.getText())
-        .setRemotePort(Integer.valueOf(forwardRemotePort.getText()))
-        .setProxyId(forwardProxyInfo.getValue());
+                .setLocalPort(Integer.valueOf(forwardLocalPort.getText()))
+                .setRemoteHost(forwardRemoteHost.getText())
+                .setRemotePort(Integer.valueOf(forwardRemotePort.getText()))
+                .setProxyId(forwardProxyInfo.getValue());
         sshService.createForward(forwardInfo);
     }
 }
