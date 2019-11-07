@@ -1,0 +1,36 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.flattened-pom.xml
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+/bak/
+/logs/
+/.vertx/
+/mybatis-generator/gen/
+!/h5/build/
+/catalina.base_IS_UNDEFINED/
+/todolist/
+hs_err_pid*.log
+replay_pid*.log
+
+
+application.pid

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<DialogPane fx:controller="cn.xz.study.proxy.controller.ProxyFormController" fx:id="proxyForm" headerText="新增跳板机服务器"
+            prefWidth="414.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <content>
+        <GridPane alignment="CENTER_LEFT">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <Label text="备注"/>
+                <Label text="远程主机" GridPane.rowIndex="1"/>
+                <Label text="远程端口" GridPane.rowIndex="2"/>
+                <Label text="用户名" GridPane.rowIndex="3"/>
+                <Label text="密码" GridPane.rowIndex="4"/>
+                <TextField fx:id="proxyDesc" GridPane.columnIndex="1"/>
+                <TextField fx:id="proxyHost" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <TextField fx:id="proxyPort" GridPane.columnIndex="1" GridPane.rowIndex="2" text="22"/>
+                <TextField fx:id="proxyUsername" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                <TextField fx:id="proxyPassword" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+            </children>
+        </GridPane>
+    </content>
+    <graphic>
+
+    </graphic>
+    <buttonTypes>
+        <ButtonType fx:constant="OK"/>
+        <ButtonType fx:constant="CANCEL"/>
+    </buttonTypes>
+</DialogPane>
