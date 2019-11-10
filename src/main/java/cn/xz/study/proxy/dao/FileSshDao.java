@@ -2,6 +2,8 @@ package cn.xz.study.proxy.dao;
 
 import cn.xz.study.proxy.entity.ForwardInfo;
 import cn.xz.study.proxy.entity.ProxyInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 
@@ -26,7 +28,7 @@ public class FileSshDao implements SshDao {
     private StorageInfo storageInfo = new StorageInfo();
     private final Map<String, ForwardInfo> forwardInfoMap;
     private final Map<String, ProxyInfo> proxyInfoMap;
-    
+
     public FileSshDao() {
         File dataFileDir = new File(FileUtils.getUserDirectory(), ".ssh-local");
         try {
@@ -41,11 +43,11 @@ public class FileSshDao implements SshDao {
         }
         forwardInfoMap = storageInfo.getForwardInfoMap();
         proxyInfoMap = storageInfo.getProxyInfoMap();
-        
+
         // 兼容
         proxyFileDir = new File(dataFileDir, "proxy");
         forwardFileDir = new File(dataFileDir, "forward");
-        
+
         if (forwardFileDir.exists()) {
             File[] files = forwardFileDir.listFiles();
             if (files != null) {
@@ -82,14 +84,16 @@ public class FileSshDao implements SshDao {
             e.printStackTrace();
         }
     }
-    
+
     private void doSaveFile() throws IOException {
-        objectMapper.writeValue(storageFile, storageInfo);
+        objectMapper.writer(new DefaultPrettyPrinter())
+                .writeValue(storageFile, storageInfo);
     }
-    
+
     @Override
     public String createForward(ForwardInfo forwardInfo) {
         String id = String.format("%d-%s:%d", forwardInfo.getLocalPort(), forwardInfo.getRemoteHost(), forwardInfo.getRemotePort());
+        id = escapeId(id);
         forwardInfo.setId(id);
         forwardInfoMap.put(id, forwardInfo);
         try {
@@ -99,42 +103,44 @@ public class FileSshDao implements SshDao {
         }
         return id;
     }
-    
-    private String getFileName(String id) {
-        return id;
-        //return id.replaceAll("[@:\\.#\\$\\*]", "-") + ".json";
+
+    private String escapeId(String id) {
+        //return id;
+        return id.replaceAll("[@:\\.#\\$\\*]", "-");
     }
-    
+
     @Override
     public ForwardInfo findForwardInfo(String id) {
-        return forwardInfoMap.get(getFileName(id));
+        return forwardInfoMap.get(escapeId(id));
     }
-    
+
     @Override
     public ProxyInfo findProxyInfo(String proxyId) {
-        return proxyInfoMap.get(getFileName(proxyId));
+        return proxyInfoMap.get(escapeId(proxyId));
     }
-    
+
     @Override
     public Boolean deleteForward(String id) {
-        forwardInfoMap.remove(getFileName(id));
+        System.out.println("id:" + id);
+        ForwardInfo remove = forwardInfoMap.remove(escapeId(id));
         try {
             doSaveFile();
-            return true;
+            return remove != null;
         } catch (IOException e) {
             throw new IllegalStateException("删除forwardInfo失败", e);
         }
     }
-    
+
     @Override
     public List<ForwardInfo> listForward() {
         List<ForwardInfo> forwardInfos = forwardInfoMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
         return Collections.unmodifiableList(forwardInfos);
     }
-    
+
     @Override
     public String createProxy(ProxyInfo proxyInfo) {
         String id = String.format("%s@%s:%d", proxyInfo.getUsername(), proxyInfo.getHost(), proxyInfo.getPort());
+        id = escapeId(id);
         proxyInfo.setId(id);
         proxyInfoMap.put(id, proxyInfo);
         try {
@@ -144,10 +150,11 @@ public class FileSshDao implements SshDao {
         }
         return id;
     }
-    
+
     @Override
     public boolean deleteProxy(String id) {
-        proxyInfoMap.remove(getFileName(id));
+        System.out.println("id:" + id);
+        proxyInfoMap.remove(escapeId(id));
         try {
             doSaveFile();
             return true;
@@ -155,10 +162,30 @@ public class FileSshDao implements SshDao {
             throw new IllegalStateException("删除proxyInfo失败", e);
         }
     }
-    
+
     @Override
     public List<ProxyInfo> listProxy() {
         List<ProxyInfo> proxyInfos = proxyInfoMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
         return Collections.unmodifiableList(proxyInfos);
+    }
+
+    @Override
+    public String getConfigJson() {
+        try {
+            return objectMapper.writer(new DefaultPrettyPrinter()).writeValueAsString(storageInfo);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "{}";
+        }
+    }
+
+    @Override
+    public void fromJson(String json) {
+        try {
+            StorageInfo storageInfo = objectMapper.readValue(json, StorageInfo.class);
+            this.storageInfo = storageInfo;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -26,9 +26,8 @@ public enum  FxSshService {
     }
 
     public ObservableList<ProxyInfo> listObservableProxy() {
+        proxyInfoObservableList.clear();
         proxyInfoObservableList.addAll(sshService.listProxy());
         return proxyInfoObservableList;
     }
-
-
 }

@@ -41,10 +41,15 @@ public class ForwardFormController extends AbstractController {
 
     private void initProxyList() {
         List<ProxyInfo> proxyInfos = sshService.listProxy();
-        List<String> stringList = proxyInfos.stream().map(proxyInfo -> String.format("%s@%s:%d", proxyInfo.getUsername(), proxyInfo.getHost(), proxyInfo.getPort())).collect(Collectors.toList());
+        List<String> stringList = proxyInfos.stream().map(ProxyInfo::toString).collect(Collectors.toList());
         forwardProxyInfo.setItems(FXCollections.observableArrayList(stringList));
         if (!stringList.isEmpty()) {
-            forwardProxyInfo.setValue(stringList.get(0));
+            Optional<ProxyInfo> defaultProxy = sshService.findDefaultProxy();
+            if (defaultProxy.isPresent()) {
+                forwardProxyInfo.setValue(defaultProxy.get().toString());
+            } else {
+                forwardProxyInfo.setValue(stringList.get(0));
+            }
         }
     }
 

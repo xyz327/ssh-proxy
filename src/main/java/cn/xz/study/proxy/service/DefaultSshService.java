@@ -6,6 +6,7 @@ import cn.xz.study.proxy.dao.SshDao;
 import cn.xz.study.proxy.entity.ForwardInfo;
 import cn.xz.study.proxy.entity.ProxyInfo;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,8 @@ public class DefaultSshService implements SshService {
     @Override
     public int start(String id) {
         ForwardInfo forwardInfo = sshDao.findForwardInfo(id);
+        forwardInfo.setStarted(true);
+        createForward(forwardInfo);
         String proxyId = forwardInfo.getProxyId();
         JProxy proxy = startedProxyMap.computeIfAbsent(proxyId, key -> {
             ProxyInfo proxyInfo = sshDao.findProxyInfo(proxyId);
@@ -71,6 +74,7 @@ public class DefaultSshService implements SshService {
         }
         int forwardLocal = proxy.forwardLocal(forwardInfo.getLocalPort(), forwardInfo.getRemoteHost(), forwardInfo.getRemotePort());
         proxyStartedForward.computeIfAbsent(proxyId, k -> new HashSet<>()).add(id);
+
         return forwardLocal;
 
     }
@@ -78,6 +82,8 @@ public class DefaultSshService implements SshService {
     @Override
     public Boolean stop(String id) {
         ForwardInfo forwardInfo = sshDao.findForwardInfo(id);
+        forwardInfo.setStarted(false);
+        createForward(forwardInfo);
         JProxy jProxy = startedProxyMap.get(forwardInfo.getProxyId());
         if (jProxy == null || !jProxy.isRunning()) {
             //TODO  proxy都没有开启
@@ -91,6 +97,7 @@ public class DefaultSshService implements SshService {
             jProxy.stop();
             startedProxyMap.remove(forwardInfo.getProxyId());
         }
+
         return true;
     }
 
@@ -102,13 +109,37 @@ public class DefaultSshService implements SshService {
 
     @Override
     public Boolean createProxy(ProxyInfo proxyInfo) {
+        if (proxyInfo.getIsDefault()) {
+            for (ProxyInfo info : listProxy()) {
+                if(!proxyInfo.equals(info)&&info.getIsDefault()){
+                    info.setIsDefault(false);
+                    sshDao.createProxy(info);
+                }
+            }
+        }
         String id = sshDao.createProxy(proxyInfo);
         return true;
+    }
+
+    @Override
+    public Optional<ProxyInfo> findDefaultProxy() {
+        return listProxy().stream().filter(ProxyInfo::getIsDefault).findFirst();
     }
 
     @Override
     public Boolean deleteProxy(String id) {
         sshDao.deleteProxy(id);
         return true;
+    }
+
+
+    @Override
+    public String getConfigJson() {
+        return sshDao.getConfigJson();
+    }
+
+    @Override
+    public void fromJson(String json) {
+        sshDao.fromJson(json);
     }
 }

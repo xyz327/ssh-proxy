@@ -4,6 +4,7 @@ import cn.xz.study.proxy.entity.ForwardInfo;
 import cn.xz.study.proxy.entity.ProxyInfo;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author xizhou
@@ -26,5 +27,11 @@ public interface SshService {
 
     Boolean createProxy(ProxyInfo proxyInfo);
 
+    Optional<ProxyInfo> findDefaultProxy();
+
     Boolean deleteProxy(String id);
+
+    String getConfigJson();
+
+    void fromJson(String json);
 }

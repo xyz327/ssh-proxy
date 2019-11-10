@@ -25,4 +25,8 @@ public interface SshDao {
     boolean deleteProxy(String id);
     
     List<ProxyInfo> listProxy();
+
+    String getConfigJson();
+
+    void fromJson(String json);
 }

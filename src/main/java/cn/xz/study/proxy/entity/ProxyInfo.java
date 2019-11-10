@@ -1,5 +1,9 @@
 package cn.xz.study.proxy.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.jsonschema.JsonSerializableSchema;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -16,4 +20,10 @@ public class ProxyInfo {
     private Integer port = 22;
     private String username;
     private String password;
+    private Boolean isDefault = Boolean.FALSE;
+
+    @Override
+    public String toString() {
+        return String.format("%s@%s:%d", getUsername(), getHost(), getPort());
+    }
 }
