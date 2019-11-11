@@ -1,15 +1,9 @@
 package cn.xz.study.proxy;
 
-import cn.xz.study.proxy.controller.MainController;
 import com.jfoenix.assets.JFoenixResources;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.svg.SVGGlyph;
 import com.jfoenix.svg.SVGGlyphLoader;
-import demos.MainDemo;
-import io.datafx.controller.flow.Flow;
-import io.datafx.controller.flow.container.DefaultFlowContainer;
-import io.datafx.controller.flow.context.FXMLViewFlowContext;
-import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
@@ -88,8 +82,8 @@ public class App extends Application {
         stage.show();
     }*/
 
-    @FXMLViewFlowContext
-    private ViewFlowContext flowContext;
+  //  @FXMLViewFlowContext
+   // private ViewFlowContext flowContext;
 
     @Override
     public void stop() throws Exception {
@@ -111,20 +105,23 @@ public class App extends Application {
         started.set(true);
         new Thread(() -> {
             try {
-                SVGGlyphLoader.loadGlyphsFont(MainDemo.class.getResourceAsStream("/fonts/icomoon.svg"),
+                SVGGlyphLoader.loadGlyphsFont(getClass().getResourceAsStream("/fonts/icomoon.svg"),
                         "icomoon.svg");
             } catch (IOException ioExc) {
                 ioExc.printStackTrace();
             }
         }).start();
 
-        Flow flow = new Flow(MainController.class);
+        /*Flow flow = new Flow(MainController.class);
         DefaultFlowContainer container = new DefaultFlowContainer();
         flowContext = new ViewFlowContext();
         flowContext.register("Stage", stage);
         flow.createHandler(flowContext).start(container);
 
-        JFXDecorator decorator = new JFXDecorator(stage, container.getView());
+        JFXDecorator decorator = new JFXDecorator(stage, container.getView());*/
+        
+        JFXDecorator decorator = new JFXDecorator(stage, FXMLLoaderUtil.loadResource("main.fxml").load());
+        
         decorator.setCustomMaximize(true);
         decorator.setGraphic(new SVGGlyph(""));
 
@@ -143,7 +140,7 @@ public class App extends Application {
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),
                 JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
-                MainDemo.class.getResource("/css/jfoenix-main-demo.css").toExternalForm());
+                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm());
         stage.setScene(scene);
         MySystemTray.getInstance().listen(stage);
         stage.show();

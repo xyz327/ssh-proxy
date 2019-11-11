@@ -36,34 +36,34 @@
             <version>2.1.0-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.datafx/flow -->
-        <dependency>
+        <!--<dependency>
             <groupId>io.datafx</groupId>
             <artifactId>flow</artifactId>
             <version>8.0.1</version>
-        </dependency>
+        </dependency>-->
         <!-- https://mvnrepository.com/artifact/io.datafx/datafx -->
-        <dependency>
+        <!--<dependency>
             <groupId>io.datafx</groupId>
             <artifactId>datafx</artifactId>
             <version>8.0.1</version>
-        </dependency>
+        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.kordamp.ikonli/ikonli-javafx -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
             <version>2.4.0</version>
-        </dependency>
+        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.kordamp.ikonli/ikonli-fontawesome5-pack -->
-        <dependency>
+       <!-- <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-fontawesome5-pack</artifactId>
             <version>2.4.0</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+        <!--<dependency>
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx</artifactId>
             <version>8.5</version>
-        </dependency>
+        </dependency>-->
         <!---->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -166,6 +166,7 @@
         </profile>
     </profiles>
     <build>
+        <finalName>local-ssh-proxy</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>

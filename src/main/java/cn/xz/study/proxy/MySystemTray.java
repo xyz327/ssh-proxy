@@ -6,6 +6,9 @@ package cn.xz.study.proxy;
  */
 
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +19,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
+import java.util.Optional;
 
 /**
  * 自定义系统托盘(单例模式)
  */
 public class MySystemTray {
-
+    
     private static MySystemTray instance;
     private static MenuItem showItem;
     private static MenuItem exitItem;
@@ -30,7 +34,7 @@ public class MySystemTray {
     private static ActionListener exitListener;
     private static MouseListener mouseListener;
     private Logger logger = LoggerFactory.getLogger(MySystemTray.class);
-
+    
     static {
         //执行stage.close()方法,窗口不直接退出
         Platform.setImplicitExit(false);
@@ -40,7 +44,7 @@ public class MySystemTray {
         //菜单项(退出)
         exitItem = new MenuItem("退出");
         //此处不能选择ico格式的图片,要使用16*16的png格式的图片
-        URL url = MySystemTray.class.getResource("/icon/icon.jpg");
+        URL url = MySystemTray.class.getResource("/icon/icon.png");
         Image image = Toolkit.getDefaultToolkit().getImage(url);
         //系统托盘图标
         trayIcon = new TrayIcon(image);
@@ -52,14 +56,14 @@ public class MySystemTray {
         mouseListener = new MouseAdapter() {
         };
     }
-
+    
     public static MySystemTray getInstance() {
         if (instance == null) {
             instance = new MySystemTray();
         }
         return instance;
     }
-
+    
     private MySystemTray() {
         try {
             //检查系统是否支持托盘
@@ -85,13 +89,14 @@ public class MySystemTray {
             logger.error(Thread.currentThread().getStackTrace()[1].getClassName() + ":系统添加失败", e);
         }
     }
-
+    
     /**
      * 更改系统托盘所监听的Stage
      */
     public void listen(Stage stage) {
         //防止报空指针异常
-        if (showListener == null || exitListener == null || mouseListener == null || showItem == null || exitItem == null || trayIcon == null) {
+        if (showListener == null || exitListener == null || mouseListener == null || showItem == null || exitItem == null ||
+            trayIcon == null) {
             return;
         }
         //移除原来的事件
@@ -119,12 +124,22 @@ public class MySystemTray {
         exitItem.addActionListener(exitListener);
         //给系统托盘添加鼠标响应事件
         trayIcon.addMouseListener(mouseListener);
-
+        
         stage.setOnCloseRequest(event -> {
-            trayIcon.displayMessage(null, stage.getTitle() + ",程序仍在运行中", TrayIcon.MessageType.INFO);
+            Optional<ButtonType> buttonType =
+                new Alert(Alert.AlertType.CONFIRMATION, "是否需要关闭程序?", new ButtonType("关闭程序", ButtonBar.ButtonData.YES),
+                          new ButtonType("最小化到托盘", ButtonBar.ButtonData.NO)).showAndWait();
+            String typeCode = buttonType.get().getButtonData().getTypeCode();
+            System.out.println(typeCode);
+            if (typeCode.equalsIgnoreCase(ButtonBar.ButtonData.YES.getTypeCode())) {
+                System.exit(0);
+                return;
+            } else if (typeCode.equalsIgnoreCase(ButtonBar.ButtonData.NO.getTypeCode())) {
+                trayIcon.displayMessage(null, stage.getTitle() + ",程序仍在运行中", TrayIcon.MessageType.INFO);
+            }
         });
     }
-
+    
     /**
      * 关闭窗口
      */
@@ -139,7 +154,7 @@ public class MySystemTray {
             }
         });
     }
-
+    
     /**
      * 点击系统托盘,显示界面(并且显示在最前面,将最小化的状态设为false)
      */

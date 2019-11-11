@@ -6,8 +6,6 @@ import cn.xz.study.proxy.controller.ui.ForwardTableOperatorCellFactory;
 import cn.xz.study.proxy.entity.ForwardInfo;
 import com.jfoenix.assets.JFoenixResources;
 import com.jfoenix.controls.JFXDecorator;
-import demos.MainDemo;
-import io.datafx.controller.ViewController;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -27,7 +25,7 @@ import java.util.Optional;
  * @author xizhou
  * @date 2019/11/3 12:25
  */
-@ViewController(value = "/main.fxml", title = "本地端口代理转发管理")
+//@ViewController(value = "/main.fxml", title = "本地端口代理转发管理")
 public class MainController extends AbstractController {
     private FxSshService sshService = FxSshService.INSTANCE;
     @FXML
