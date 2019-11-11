@@ -28,7 +28,7 @@ public class FileSshDao implements SshDao {
     private StorageInfo storageInfo = new StorageInfo();
     private final Map<String, ForwardInfo> forwardInfoMap;
     private final Map<String, ProxyInfo> proxyInfoMap;
-
+    
     public FileSshDao() {
         File dataFileDir = new File(FileUtils.getUserDirectory(), ".ssh-local");
         try {
@@ -43,11 +43,11 @@ public class FileSshDao implements SshDao {
         }
         forwardInfoMap = storageInfo.getForwardInfoMap();
         proxyInfoMap = storageInfo.getProxyInfoMap();
-
-        // 兼容
+        
+        // ===========================兼容===========================
         proxyFileDir = new File(dataFileDir, "proxy");
         forwardFileDir = new File(dataFileDir, "forward");
-
+        
         if (forwardFileDir.exists()) {
             File[] files = forwardFileDir.listFiles();
             if (files != null) {
@@ -78,18 +78,29 @@ public class FileSshDao implements SshDao {
             }
             FileUtils.deleteQuietly(proxyFileDir);
         }
+        // ===========================兼容===========================
         try {
+            
+            alignId();
             doSaveFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    private void doSaveFile() throws IOException {
-        objectMapper.writer(new DefaultPrettyPrinter())
-                .writeValue(storageFile, storageInfo);
+    
+    private void alignId() {
+        proxyInfoMap.forEach((s, proxyInfo) -> {
+            proxyInfo.setId(escapeId(s));
+        });
+        forwardInfoMap.forEach((s, forwardInfo) -> {
+            forwardInfo.setId(escapeId(s));
+        });
     }
-
+    
+    private void doSaveFile() throws IOException {
+        objectMapper.writer(new DefaultPrettyPrinter()).writeValue(storageFile, storageInfo);
+    }
+    
     @Override
     public String createForward(ForwardInfo forwardInfo) {
         String id = String.format("%d-%s:%d", forwardInfo.getLocalPort(), forwardInfo.getRemoteHost(), forwardInfo.getRemotePort());
@@ -103,22 +114,22 @@ public class FileSshDao implements SshDao {
         }
         return id;
     }
-
+    
     private String escapeId(String id) {
-        //return id;
-        return id.replaceAll("[@:\\.#\\$\\*]", "-");
+        return id;
+        //return id.replaceAll("[@:\\.#\\$\\*]", "-");
     }
-
+    
     @Override
     public ForwardInfo findForwardInfo(String id) {
         return forwardInfoMap.get(escapeId(id));
     }
-
+    
     @Override
     public ProxyInfo findProxyInfo(String proxyId) {
         return proxyInfoMap.get(escapeId(proxyId));
     }
-
+    
     @Override
     public Boolean deleteForward(String id) {
         System.out.println("id:" + id);
@@ -130,13 +141,13 @@ public class FileSshDao implements SshDao {
             throw new IllegalStateException("删除forwardInfo失败", e);
         }
     }
-
+    
     @Override
     public List<ForwardInfo> listForward() {
         List<ForwardInfo> forwardInfos = forwardInfoMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
         return Collections.unmodifiableList(forwardInfos);
     }
-
+    
     @Override
     public String createProxy(ProxyInfo proxyInfo) {
         String id = String.format("%s@%s:%d", proxyInfo.getUsername(), proxyInfo.getHost(), proxyInfo.getPort());
@@ -150,7 +161,7 @@ public class FileSshDao implements SshDao {
         }
         return id;
     }
-
+    
     @Override
     public boolean deleteProxy(String id) {
         System.out.println("id:" + id);
@@ -162,13 +173,13 @@ public class FileSshDao implements SshDao {
             throw new IllegalStateException("删除proxyInfo失败", e);
         }
     }
-
+    
     @Override
     public List<ProxyInfo> listProxy() {
         List<ProxyInfo> proxyInfos = proxyInfoMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
         return Collections.unmodifiableList(proxyInfos);
     }
-
+    
     @Override
     public String getConfigJson() {
         try {
@@ -178,12 +189,17 @@ public class FileSshDao implements SshDao {
             return "{}";
         }
     }
-
+    
     @Override
     public void fromJson(String json) {
         try {
             StorageInfo storageInfo = objectMapper.readValue(json, StorageInfo.class);
-            this.storageInfo = storageInfo;
+            forwardInfoMap.clear();
+            forwardInfoMap.putAll(storageInfo.getForwardInfoMap());
+            proxyInfoMap.clear();
+            proxyInfoMap.putAll(storageInfo.getProxyInfoMap());
+            alignId();
+            doSaveFile();
         } catch (IOException e) {
             e.printStackTrace();
         }

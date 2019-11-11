@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import java.util.Optional;
  * @date 2019/11/3 12:25
  */
 //@ViewController(value = "/main.fxml", title = "本地端口代理转发管理")
+@Slf4j
 public class MainController extends AbstractController {
     private FxSshService sshService = FxSshService.INSTANCE;
     @FXML
@@ -44,7 +46,7 @@ public class MainController extends AbstractController {
     private TableColumn<ForwardInfo, Void> tableOperator;
     @FXML
     private Label infoLabel;
-
+    
     @Override
     protected void initializeInternal() {
         initInfoLabel();
@@ -57,25 +59,29 @@ public class MainController extends AbstractController {
         forwardTable.setItems(sshService.listObservableForward());
         // 编辑
         forwardTable.setEditable(true);
+        
+        ContextMenu contextMenu = new ContextMenu();
+        
+        forwardTable.setContextMenu(contextMenu);
     }
-
+    
     @Override
     protected void initializeDataInternal() {
         initForwardList();
     }
-
+    
     private void initInfoLabel() {
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
         infoLabel.setText(String.format("build by java :%s javafx: %s", javaVersion, javafxVersion));
     }
-
+    
     private void initForwardList() {
         sshService.listObservableForward();
     }
-
+    
     //======================= EVENT Handler
-
+    
     public void onAddFile(Event event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("新增转发");
@@ -89,7 +95,7 @@ public class MainController extends AbstractController {
             initForwardList();
         }
     }
-
+    
     public void onShowProxyList(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = FXMLLoaderUtil.loadResource("proxyList.fxml");
         AnchorPane anchorPane = fxmlLoader.load();
@@ -100,11 +106,11 @@ public class MainController extends AbstractController {
         stage.setTitle("跳板机管理");
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),
-                JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm());
+                           JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
+                           getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm());
         stage.showAndWait();
     }
-
+    
     public void onShowEditConfg(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = FXMLLoaderUtil.loadResource("editConfig.fxml");
         Alert alert = new Alert(Alert.AlertType.NONE);
@@ -116,5 +122,18 @@ public class MainController extends AbstractController {
             controller.save();
             initForwardList();
         }
+    }
+    
+    public void onShowLog(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = FXMLLoaderUtil.loadResource("logDialog.fxml");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setResizable(true);
+        alert.setDialogPane(fxmlLoader.load());
+        alert.setTitle("查看日志");
+        alert.showAndWait();
+    }
+    
+    public void refreshData(ActionEvent actionEvent) {
+        initializeDataInternal();
     }
 }

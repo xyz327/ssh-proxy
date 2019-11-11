@@ -14,9 +14,12 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.WriterOutputStream;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,7 +30,7 @@ public class App extends Application {
     public static Stage mainStage;
     private static File lockFile;
     private static transient AtomicBoolean started = new AtomicBoolean(false);
-
+    
     static {
         File userDirectory = FileUtils.getUserDirectory();
         File dataDir = new File(userDirectory, ".ssh-local");
@@ -38,8 +41,48 @@ public class App extends Application {
             e.printStackTrace();
         }
     }
-
+    
+    public static final StringWriter stringWriter = new StringWriter() {
+        private int maxLength = 1024 * 1024;
+        
+        @Override
+        public void write(int c) {
+            checkSize();
+            super.write(c);
+        }
+        
+        @Override
+        public void write(char[] cbuf, int off, int len) {
+            checkSize();
+            super.write(cbuf, off, len);
+        }
+        
+        @Override
+        public void write(String str) {
+            checkSize();
+            super.write(str);
+        }
+        
+        @Override
+        public void write(String str, int off, int len) {
+            checkSize();
+            super.write(str, off, len);
+        }
+        
+        private void checkSize() {
+            int length = getBuffer().length();
+            if (length > maxLength) {
+                getBuffer().setLength(0);
+            }
+        }
+    };
+    
     public static void main(String[] args) {
+        
+        WriterOutputStream writerOutputStream = new WriterOutputStream(stringWriter, "UTF8", 1024, true);
+        PrintStream printStream = new PrintStream(writerOutputStream);
+        System.setOut(printStream);
+        System.setErr(printStream);
         launch(args);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -55,11 +98,12 @@ public class App extends Application {
             }
         });
     }
-
+    
     private static void checkInstance() {
         if (lockFile != null) {
             if (lockFile.exists()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "程序已经在运行!", ButtonType.OK, new ButtonType("继续运行新程序", ButtonBar.ButtonData.APPLY));
+                Alert alert =
+                    new Alert(Alert.AlertType.WARNING, "程序已经在运行!", ButtonType.OK, new ButtonType("继续运行新程序", ButtonBar.ButtonData.APPLY));
                 Optional<ButtonType> buttonType = alert.showAndWait();
                 if (buttonType.get().getButtonData().getTypeCode().equals(ButtonBar.ButtonData.APPLY.getTypeCode())) {
                     return;
@@ -81,18 +125,18 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }*/
-
-  //  @FXMLViewFlowContext
-   // private ViewFlowContext flowContext;
-
+    
+    //  @FXMLViewFlowContext
+    // private ViewFlowContext flowContext;
+    
     @Override
     public void stop() throws Exception {
         FileUtils.deleteQuietly(lockFile);
     }
-
+    
     @Override
     public void start(Stage stage) throws Exception {
-
+        
         checkInstance();
         if (lockFile != null) {
             try {
@@ -105,8 +149,7 @@ public class App extends Application {
         started.set(true);
         new Thread(() -> {
             try {
-                SVGGlyphLoader.loadGlyphsFont(getClass().getResourceAsStream("/fonts/icomoon.svg"),
-                        "icomoon.svg");
+                SVGGlyphLoader.loadGlyphsFont(getClass().getResourceAsStream("/fonts/icomoon.svg"), "icomoon.svg");
             } catch (IOException ioExc) {
                 ioExc.printStackTrace();
             }
@@ -124,9 +167,9 @@ public class App extends Application {
         
         decorator.setCustomMaximize(true);
         decorator.setGraphic(new SVGGlyph(""));
-
+        
         stage.setTitle("本地端口代理转发管理");
-
+        
         double width = 800;
         double height = 400;
         try {
@@ -135,12 +178,12 @@ public class App extends Application {
             height = bounds.getHeight() / 2;
         } catch (Exception e) {
         }
-
+        
         Scene scene = new Scene(decorator, width, height);
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(JFoenixResources.load("css/jfoenix-fonts.css").toExternalForm(),
-                JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm());
+                           JFoenixResources.load("css/jfoenix-design.css").toExternalForm(),
+                           getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm());
         stage.setScene(scene);
         MySystemTray.getInstance().listen(stage);
         stage.show();
