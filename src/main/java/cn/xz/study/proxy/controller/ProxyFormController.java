@@ -10,7 +10,7 @@ import javafx.scene.control.ToggleButton;
  * @date 2019/11/3 18:57
  */
 public class ProxyFormController extends AbstractController {
-
+    
     @FXML
     private TextField proxyDesc;
     @FXML
@@ -23,25 +23,26 @@ public class ProxyFormController extends AbstractController {
     private TextField proxyPassword;
     @FXML
     private ToggleButton isDefaultProxy;
-
+    
     protected void initializeInternal() {
         boolean anyMatch = sshService.listProxy().stream().noneMatch(ProxyInfo::getIsDefault);
         isDefaultProxy.setSelected(anyMatch);
     }
-
+    
     @Override
     protected void initializeDataInternal() {
-
+    
     }
-
+    
     public Boolean save() {
         ProxyInfo proxyInfo = new ProxyInfo();
         proxyInfo.setDesc(proxyDesc.getText())
-                .setIsDefault(isDefaultProxy.isSelected())
-                .setHost(proxyHost.getText())
-                .setPort(Integer.valueOf(proxyPort.getText()))
-                .setUsername(proxyUsername.getText())
-                .setPassword(proxyPassword.getText());
+            .setIsDefault(isDefaultProxy.isSelected())
+            .setHost(proxyHost.getText())
+            .setPort(Integer.valueOf(proxyPort.getText()))
+            .setUsername(proxyUsername.getText())
+            .setPassword(proxyPassword.getText())
+            .setId(proxyInfo.toString());
         return sshService.createProxy(proxyInfo);
     }
 }

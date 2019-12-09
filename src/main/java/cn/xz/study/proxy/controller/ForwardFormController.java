@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @date 2019/11/3 18:57
  */
 public class ForwardFormController extends AbstractController {
-
+    
     @FXML
     private TextField forwardDesc;
     @FXML
@@ -32,35 +32,36 @@ public class ForwardFormController extends AbstractController {
     @FXML
     private TextField forwardRemotePort;
     @FXML
-    private ChoiceBox<String> forwardProxyInfo;
-
+    private ChoiceBox<ProxyInfo> forwardProxyInfo;
+    
     @Override
     protected void initializeInternal() {
-
+    
     }
-
+    
     private void initProxyList() {
         List<ProxyInfo> proxyInfos = sshService.listProxy();
-        List<String> stringList = proxyInfos.stream().map(ProxyInfo::toString).collect(Collectors.toList());
-        forwardProxyInfo.setItems(FXCollections.observableArrayList(stringList));
+        List<String> stringList =
+            proxyInfos.stream().map(proxyInfo -> proxyInfo.getDesc() + proxyInfo.toString()).collect(Collectors.toList());
+        forwardProxyInfo.setItems(FXCollections.observableArrayList(proxyInfos));
         if (!stringList.isEmpty()) {
             Optional<ProxyInfo> defaultProxy = sshService.findDefaultProxy();
             if (defaultProxy.isPresent()) {
-                forwardProxyInfo.setValue(defaultProxy.get().toString());
+                ProxyInfo proxyInfo = defaultProxy.get();
+                forwardProxyInfo.setValue(proxyInfo);
             } else {
-                forwardProxyInfo.setValue(stringList.get(0));
+                forwardProxyInfo.setValue(proxyInfos.get(0));
             }
         }
     }
-
+    
     @Override
     protected void initializeDataInternal() {
         initProxyList();
     }
-
-//==================
-
-
+    
+    //==================
+    
     public boolean onNewProxy(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("新增代理");
@@ -75,18 +76,18 @@ public class ForwardFormController extends AbstractController {
                 return true;
             }
             return false;
-
+            
         }
         return true;
     }
-
+    
     public void save() {
         ForwardInfo forwardInfo = new ForwardInfo();
         forwardInfo.setDesc(forwardDesc.getText())
-                .setLocalPort(Integer.valueOf(forwardLocalPort.getText()))
-                .setRemoteHost(forwardRemoteHost.getText())
-                .setRemotePort(Integer.valueOf(forwardRemotePort.getText()))
-                .setProxyId(forwardProxyInfo.getValue());
+            .setLocalPort(Integer.valueOf(forwardLocalPort.getText()))
+            .setRemoteHost(forwardRemoteHost.getText())
+            .setRemotePort(Integer.valueOf(forwardRemotePort.getText()))
+            .setProxyId(forwardProxyInfo.getValue().getId());
         sshService.createForward(forwardInfo);
     }
 }

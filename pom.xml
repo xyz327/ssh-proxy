@@ -196,6 +196,14 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.8.3</version>
+                <configuration>
+                    <mainClass>cn.xz.study.proxy.App</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
