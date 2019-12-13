@@ -1,5 +1,6 @@
 package cn.xz.study.proxy.controller;
 
+import cn.xz.study.proxy.App;
 import cn.xz.study.proxy.FXMLLoaderUtil;
 import cn.xz.study.proxy.FxSshService;
 import cn.xz.study.proxy.controller.ui.ForwardTableOperatorCellFactory;
@@ -130,7 +131,6 @@ public class MainController extends AbstractController {
         alert.setResizable(true);
         alert.setDialogPane(fxmlLoader.load());
         alert.setTitle("查看日志");
-        alert.showAndWait();
     }
     
     public void refreshData(ActionEvent actionEvent) {

@@ -3,7 +3,7 @@
 <?import com.jfoenix.controls.JFXToolbar?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="451.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1"
+<AnchorPane prefHeight="451.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.xz.study.proxy.controller.MainController">
     <!--<Pane AnchorPane.topAnchor="5" AnchorPane.leftAnchor="5" prefHeight="30">
 
@@ -31,7 +31,7 @@
             <TableColumn fx:id="tableRemoteHost" prefWidth="130" text="远程服务主机"/>
             <TableColumn fx:id="tableRemotePort" prefWidth="80" text="远程服务端口"/>
             <TableColumn fx:id="tableProxyInfo" prefWidth="200" text="跳板机"/>
-            <TableColumn fx:id="tableOperator" prefWidth="200" text="操作"/>
+            <TableColumn fx:id="tableOperator" prefWidth="125" text="操作"/>
         </columns>
     </TableView>
     <HBox AnchorPane.bottomAnchor="5" AnchorPane.rightAnchor="5">

@@ -170,7 +170,7 @@ public class App extends Application {
         
         stage.setTitle("本地端口代理转发管理");
         
-        double width = 800;
+        double width = 820;
         double height = 400;
         try {
             Rectangle2D bounds = Screen.getScreens().get(0).getBounds();
