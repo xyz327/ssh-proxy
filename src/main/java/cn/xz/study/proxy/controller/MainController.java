@@ -131,6 +131,7 @@ public class MainController extends AbstractController {
         alert.setResizable(true);
         alert.setDialogPane(fxmlLoader.load());
         alert.setTitle("查看日志");
+        alert.show();
     }
     
     public void refreshData(ActionEvent actionEvent) {
