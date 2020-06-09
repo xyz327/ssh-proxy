@@ -2,10 +2,8 @@ package cn.xz.study.proxy.controller.ui;
 
 import cn.xz.study.proxy.FxSshService;
 import cn.xz.study.proxy.controller.AbstractController;
-import cn.xz.study.proxy.controller.ProxyFormController;
 import cn.xz.study.proxy.entity.ForwardInfo;
 import cn.xz.study.proxy.util.ButtonUtil;
-import cn.xz.study.proxy.util.DialogUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;

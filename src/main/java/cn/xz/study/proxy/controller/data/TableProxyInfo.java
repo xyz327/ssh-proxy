@@ -6,12 +6,14 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author xizhou
  * @date 2019/11/9 17:09
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class TableProxyInfo extends RecursiveTreeObject<TableProxyInfo> {
     private StringProperty id;
     private StringProperty desc;

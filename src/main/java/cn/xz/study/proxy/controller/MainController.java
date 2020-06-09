@@ -1,6 +1,5 @@
 package cn.xz.study.proxy.controller;
 
-import cn.xz.study.proxy.App;
 import cn.xz.study.proxy.FXMLLoaderUtil;
 import cn.xz.study.proxy.FxSshService;
 import cn.xz.study.proxy.controller.ui.ForwardTableOperatorCellFactory;

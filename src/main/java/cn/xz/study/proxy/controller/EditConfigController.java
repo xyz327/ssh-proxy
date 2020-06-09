@@ -1,6 +1,5 @@
 package cn.xz.study.proxy.controller;
 
-import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 

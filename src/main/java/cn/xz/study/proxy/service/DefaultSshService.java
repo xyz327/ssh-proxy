@@ -1,12 +1,11 @@
 package cn.xz.study.proxy.service;
 
-import com.pagoda.platform.ssh.JProxy;
 import cn.xz.study.proxy.dao.FileSshDao;
 import cn.xz.study.proxy.dao.SshDao;
 import cn.xz.study.proxy.entity.ForwardInfo;
 import cn.xz.study.proxy.entity.ProxyInfo;
+import cn.xz.study.proxy.ssh.JProxy;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 

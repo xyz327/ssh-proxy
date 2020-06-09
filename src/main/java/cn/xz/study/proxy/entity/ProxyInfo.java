@@ -1,9 +1,5 @@
 package cn.xz.study.proxy.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.jsonschema.JsonSerializableSchema;
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

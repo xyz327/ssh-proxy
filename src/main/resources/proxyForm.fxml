@@ -3,7 +3,6 @@
 <?import com.jfoenix.controls.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 <DialogPane fx:controller="cn.xz.study.proxy.controller.ProxyFormController" fx:id="proxyForm" headerText="新增跳板机服务器"
             prefWidth="414.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <content>
