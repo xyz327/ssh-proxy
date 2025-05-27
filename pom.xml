@@ -110,9 +110,9 @@
                                     <version>${lombok.version}</version>
                                 </path>
                             </annotationProcessorPaths>
-                            <includes>
-                                <include>jdk11/**</include>
-                            </includes>
+<!--                            <includes>-->
+<!--                                <include>jdk11/**</include>-->
+<!--                            </includes>-->
                         </configuration>
                     </plugin>
                 </plugins>
