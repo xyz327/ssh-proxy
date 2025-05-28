@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.xz.study</groupId>
@@ -16,7 +17,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!--<javafx.version>11.0.2</javafx.version>-->
-        <lombok.version>1.18.10</lombok.version>
+        <lombok.version>1.18.20</lombok.version>
+        <project.organization.name>xyz327</project.organization.name>
     </properties>
 
     <dependencies>
@@ -65,9 +67,6 @@
     <profiles>
         <profile>
             <id>jdk11</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.openjfx</groupId>
@@ -80,14 +79,16 @@
                     <version>11.0.2</version>
                 </dependency>
                 <!-- https://mvnrepository.com/artifact/com.jfoenix/jfoenix -->
-                <!--javafx 美化-->
+                <!--javafx
+                美化-->
                 <dependency>
                     <groupId>com.jfoenix</groupId>
                     <artifactId>jfoenix</artifactId>
                     <version>9.0.9</version>
                 </dependency>
 
-                <!--lombok 在jdk11下的问题-->
+                <!--lombok
+                在jdk11下的问题-->
                 <dependency>
                     <groupId>org.mapstruct</groupId>
                     <artifactId>mapstruct-processor</artifactId>
@@ -97,6 +98,25 @@
             </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-source</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/main/jdk11</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <version>3.8.0</version>
@@ -110,9 +130,28 @@
                                     <version>${lombok.version}</version>
                                 </path>
                             </annotationProcessorPaths>
-                            <includes>
+                            <!-- <includes>
+                                <include>src/main/java</include>
                                 <include>jdk11/**</include>
-                            </includes>
+                            </includes> -->
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.zenjava</groupId>
+                        <artifactId>javafx-maven-plugin</artifactId>
+                        <version>8.9.0-SNAPSHOT</version>
+                        <configuration>
+                            <mainClass>cn.xz.study.proxy.App</mainClass>
+                            <bundleArguments>
+                                <!-- "module-path" -->
+                                <module-path>PATH_1;PATH_2;PATH_3</module-path><!-- use File.pathSeparator !!! os-dependant -->
+                                <!-- "module" -->
+                                <module>module1,module2,module3</module>
+                                <!-- "add-modules" -->
+                                <add-modules>module1,module2,module3</add-modules>
+                                <!-- "limit-modules" -->
+                                <limit-modules>module1,module2,module3</limit-modules>
+                            </bundleArguments>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -120,8 +159,12 @@
         </profile>
         <profile>
             <id>jdk8</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <dependencies>
-                <!--javafx 美化-->
+                <!--javafx
+                美化-->
                 <dependency>
                     <groupId>com.jfoenix</groupId>
                     <artifactId>jfoenix</artifactId>
@@ -137,15 +180,63 @@
                             <target>1.8</target>
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>com.zenjava</groupId>
+                        <artifactId>javafx-maven-plugin</artifactId>
+                        <version>8.8.3</version>
+                        <configuration>
+                            <mainClass>cn.xz.study.proxy.App</mainClass>
+                            <identifier>cn.xz.study.ssh-proxy</identifier>
+                            <appName>ssh-proxy</appName>
+                            <verbose>true</verbose>
+                            <bundler>mac.app</bundler>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.github.fvarrui</groupId>
+                        <artifactId>javapackager</artifactId>
+                        <version>1.7.6</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- mandatory -->
+                                    <mainClass>cn.xz.study.proxy.App</mainClass>
+                                    <!-- optional -->
+                                    <bundleJre>true</bundleJre>
+                                    <generateInstaller>true</generateInstaller>
+                                    <administratorRequired>false</administratorRequired>
+                                    <platform>auto</platform>
+                                    <jrePath>${JAVA_HOME}/jre</jrePath>
+                                    <additionalResources>
+                                    </additionalResources>
+                                    <!-- <macConfig>...</macConfig> -->
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>oss-sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
         <finalName>local-ssh-proxy</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.5</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptorRefs>
@@ -162,19 +253,12 @@
                         <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>assembly</goal>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.zenjava</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.8.3</version>
-                <configuration>
-                    <mainClass>cn.xz.study.proxy.App</mainClass>
-                </configuration>
-            </plugin>
+
         </plugins>
     </build>
 </project>
